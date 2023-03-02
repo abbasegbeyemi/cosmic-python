@@ -1,0 +1,9 @@
+{
+    "python.formatting.provider": "black",
+    "python.testing.pytestArgs": [
+        "python_code"
+    ],
+    pythonPath
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
