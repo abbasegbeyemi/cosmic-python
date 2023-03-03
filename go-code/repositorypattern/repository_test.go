@@ -1,7 +1,6 @@
 package repositorypattern
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -16,7 +15,8 @@ func getTestDB(t testing.TB) *gorm.DB {
 
 	// Create a temporary file for the database
 	dir, _ := os.Getwd()
-	file, err := ioutil.TempFile(dir, "test-*.db")
+	file, err := os.CreateTemp(dir, "test-*.db")
+
 	if err != nil {
 		t.Fatal(err)
 	}
