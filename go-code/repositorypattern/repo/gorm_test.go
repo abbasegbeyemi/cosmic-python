@@ -38,7 +38,7 @@ func getTestDB(t testing.TB) *gorm.DB {
 	return db
 }
 
-func TestRepository(t *testing.T) {
+func TestGormRepository(t *testing.T) {
 	t.Run("Can save a batch", func(t *testing.T) {
 		db := getTestDB(t)
 
@@ -79,11 +79,11 @@ func TestRepository(t *testing.T) {
 			SKU:      "CAT-TREE",
 			Quantity: 12,
 		}
-		orderLineId := insertOrderLine(t, db, expectedOrderLine.OrderID, expectedOrderLine.SKU, expectedOrderLine.Quantity)
-		batchId := insertBatch(t, db, "batch1", "CAT-TREE", 100, "2021-01-01")
+		orderLineId := gormInsertOrderLine(t, db, expectedOrderLine.OrderID, expectedOrderLine.SKU, expectedOrderLine.Quantity)
+		batchId := gormInsertBatch(t, db, "batch1", "CAT-TREE", 100, "2021-01-01")
 
-		insertBatch(t, db, "batch2", "CAT-HOUSE", 100, "2022-01-01")
-		insertAllocation(t, db, orderLineId, batchId)
+		gormInsertBatch(t, db, "batch2", "CAT-HOUSE", 100, "2022-01-01")
+		gormInsertAllocation(t, db, orderLineId, batchId)
 
 		repo := NewGormRepository(db)
 		retrieved := repo.Get("batch1")
@@ -102,8 +102,8 @@ func TestRepository(t *testing.T) {
 	t.Run("Can retrieve a list of batches", func(t *testing.T) {
 		db := getTestDB(t)
 
-		insertBatch(t, db, "batch1", "CAT-TREE", 100, "2021-01-01")
-		insertBatch(t, db, "batch2", "CAT-HOUSE", 100, "2022-01-01")
+		gormInsertBatch(t, db, "batch1", "CAT-TREE", 100, "2021-01-01")
+		gormInsertBatch(t, db, "batch2", "CAT-HOUSE", 100, "2022-01-01")
 
 		repo := NewGormRepository(db)
 		retrieved := repo.List()
@@ -111,7 +111,7 @@ func TestRepository(t *testing.T) {
 	})
 }
 
-func insertOrderLine(t testing.TB, db *gorm.DB, orderId string, sku string, quantity int) uint {
+func gormInsertOrderLine(t testing.TB, db *gorm.DB, orderId string, sku string, quantity int) uint {
 	t.Helper()
 	orderLine := &OrderLine{
 		OrderID:  orderId,
@@ -123,7 +123,7 @@ func insertOrderLine(t testing.TB, db *gorm.DB, orderId string, sku string, quan
 	return orderLine.ID
 }
 
-func insertBatch(t testing.TB, db *gorm.DB, reference string, sku string, quantity int, eta string) uint {
+func gormInsertBatch(t testing.TB, db *gorm.DB, reference string, sku string, quantity int, eta string) uint {
 	t.Helper()
 	batch := &Batch{
 		Reference: reference,
@@ -136,7 +136,7 @@ func insertBatch(t testing.TB, db *gorm.DB, reference string, sku string, quanti
 	return batch.ID
 }
 
-func insertAllocation(t testing.TB, db *gorm.DB, orderLineId uint, batchId uint) {
+func gormInsertAllocation(t testing.TB, db *gorm.DB, orderLineId uint, batchId uint) {
 	t.Helper()
 	// Get the order line
 	var orderLine OrderLine
